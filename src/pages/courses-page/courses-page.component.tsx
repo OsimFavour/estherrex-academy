@@ -75,7 +75,7 @@ const CoursesPage = () => {
     <div className="container py-12 px-5">
       <div className="space-y-4 text-center">
         <h1 className="text-3xl font-bold">Our Courses</h1>
-        <p className="text-muted-foreground max-w-[800px] mx-auto">
+        <p className="text-muted-foreground max-w-[800px] mx-auto px-2">
           Explore our diverse range of courses designed to nurture academic excellence and character development.
         </p>
       </div>
