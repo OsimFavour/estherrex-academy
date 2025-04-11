@@ -16,7 +16,7 @@ const CTASection = () => {
             <Button asChild variant="secondary" size="lg">
               <Link to="/register">Register Now</Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="secondary" size="lg">
               <Link to="/contact">Contact Us</Link>
             </Button>
           </div>

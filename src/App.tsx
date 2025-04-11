@@ -10,6 +10,7 @@ import ContactPage from "./pages/contact-page/contact-page.component";
 import RegisterPage from "./pages/register-page/register-page.component";
 import SignIn from "./pages/sign-in/sign-in.component";
 import NotFound from "./pages/not-found/not-found.component";
+import SignUp from "./pages/sign-up/sign-up.component";
 
 
 const queryClient = new QueryClient();
@@ -25,7 +26,7 @@ const App = () => (
           <Route index element={<HomePage />} />
           <Route path="login" element={<SignIn />} />
           <Route path="register" element={<RegisterPage />} />
-          <Route path="signup" element={<Signup />} />
+          <Route path="signup" element={<SignUp />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="courses" element={<CoursesPage />} />
