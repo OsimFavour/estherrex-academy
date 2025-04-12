@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const AboutPage = () => {
   return (
-    <div className="container py-12">
+    <div className="container py-12 px-3">
       <div className="max-w-3xl mx-auto space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold">About Esther's Wisdom Academy</h1>
