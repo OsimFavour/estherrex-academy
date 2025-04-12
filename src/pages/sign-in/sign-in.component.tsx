@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { Separator } from "@/components/ui/separator";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -26,14 +27,20 @@ const SignIn = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Login form submitted:", formData);
-    toast( "Login Successful",
-      {
-        description: "Welcome to Esther's Wisdom Academy portal!",
+    toast("Login Successful", {
+      description: "Welcome to Esther's Wisdom Academy portal!",
+    });
+  };
+
+  const handleGoogleLogin = () => {
+    console.log("Google login initiated");
+    toast("Google Login Initiated", {
+      description: "Connecting to Google...",
     });
   };
 
   return (
-    <div className="container py-12 flex justify-center">
+    <div className="container py-12 px-4 flex justify-center">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">Login</h1>
@@ -97,10 +104,41 @@ const SignIn = () => {
               <Button type="submit" className="w-full">
                 Sign In
               </Button>
+              
+              <div className="relative w-full">
+                <div className="absolute inset-0 flex items-center">
+                  <Separator className="w-full" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
+              
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full flex items-center justify-center gap-2"
+                onClick={handleGoogleLogin}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+                  <path d="M12 8v8M8 12h8" />
+                </svg>
+                <span>Sign in with Google</span>
+              </Button>
+              
               <p className="text-center text-sm text-muted-foreground">
                 Don't have an account?{" "}
+                <Link to="/signup" className="text-primary hover:underline">
+                  Sign up
+                </Link>
+              </p>
+              <p className="text-center text-sm text-muted-foreground">
+                Need to register a student?{" "}
                 <Link to="/register" className="text-primary hover:underline">
-                  Register
+                  Register here
                 </Link>
               </p>
             </CardFooter>
