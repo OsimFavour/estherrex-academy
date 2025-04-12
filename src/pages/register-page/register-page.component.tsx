@@ -57,7 +57,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="container py-12">
+    <div className="container px-4 py-12">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">Student Registration</h1>

@@ -39,7 +39,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="container py-12 flex justify-center">
+    <div className="container py-12 px-4 flex justify-center">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">Sign Up</h1>
@@ -104,7 +104,7 @@ const SignUp = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 pb-4">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input
                   id="confirmPassword"
