@@ -20,7 +20,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 // import { Separator } from "@/components/ui/separator";
 
-import { signInAuthUserWithEmailAndPassword } from "@/utils/firebase/firebase.utils";
+import { authenticateWithGooglePopup, signInAuthUserWithEmailAndPassword } from "@/utils/firebase/firebase.utils";
 
 type SignInFormValues = {
   email: string;
@@ -76,11 +76,16 @@ const SignIn = () => {
   //   setFormData((prev) => ({ ...prev, rememberMe: checked }));
   // };
 
-  const handleGoogleLogin = () => {
+  const authenticateWithGoogle = async () => {
     console.log("Google login initiated");
-    toast("Google Login Initiated", {
-      description: "Connecting to Google...",
-    });
+    const response = await authenticateWithGooglePopup()
+    if (response) {
+      toast.success('Welcome back!')
+      navigate('/')
+  } else {
+      toast.info("You'll need to sign up here")
+      navigate('/sign-up')
+  }
   };
 
   return (
@@ -107,7 +112,7 @@ const SignIn = () => {
                 <Button
                   variant="outline"
                   type="button"
-                  onClick={handleGoogleLogin}
+                  onClick={authenticateWithGoogle}
                   className="w-full flex items-center justify-center gap-2"
                 >
                   <svg viewBox="0 0 48 48" className="w-5 h-5">

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,42 +9,136 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator";
+import {
+  authenticateWithGooglePopup,
+  createAuthUserWithEmailAndPassword,
+  createUserDocumentFromAuth,
+} from "@/utils/firebase/firebase.utils";
+import { FormikHelpers, useFormik } from "formik";
+
+
+type SignUpFormValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirm_password: string;
+};
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // const [formData, setFormData] = useState({
+  //   firstName: "",
+  //   lastName: "",
+  //   email: "",
+  //   password: "",
+  //   confirmPassword: "",
+  // });
+
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (formData.password !== formData.confirmPassword) {
+  //     toast.error("Passwords do not match.");
+  //     return;
+  //   }
+
+  //   console.log("Signup form submitted:", formData);
+  //   toast.success(
+  //     "Your account has been created. Welcome to Esther's Wisdom Academy!"
+  //   );
+  // };
+
+  const onSubmit = async (values: SignUpFormValues, actions: FormikHelpers<SignUpFormValues>) => {
+    const { firstName, email, password } = values;
+
+    // const { user } = response;
+
+    try {
+      const response = await createAuthUserWithEmailAndPassword(
+        email,
+        password
+      );
+
+      if (!response || !response.user) {
+        toast.error("Google authentication failed. Please try again.");
+        return;
+      }
+      // const { user } = response;
+
+      await createUserDocumentFromAuth(response, { displayName: firstName });
+      console.log("Username >>>", firstName);
+
+      actions.resetForm();
+
+      toast.success("Signed up successfully");
+      navigate(from);
+    } catch (error: unknown) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        typeof (error as { code: string }).code === "string"
+      ) {
+        const errCode = (error as { code: string }).code;
+    
+        if (errCode === "auth/network-request-failed") {
+          toast.error("No network connection");
+        } else if (errCode === "auth/email-already-in-use") {
+          toast.error("Cannot create user, email already in use");
+        } else {
+          console.log("User creation encountered an error", error);
+        }
+      } else {
+        toast.error("An unexpected error occurred.");
+        console.error("Unknown error", error);
+      }
+    }
+    
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const authenticateWithGoogle = async () => {
+    const response = await authenticateWithGooglePopup();
 
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match.");
+    if (!response || !response.user) {
+      toast.error("Google authentication failed. Please try again.");
       return;
     }
 
-    console.log("Signup form submitted:", formData);
-    toast.success(
-      "Your account has been created. Welcome to Esther's Wisdom Academy!"
-    );
+    const { user } = response;
+
+    if (user) {
+      toast.info("You already have an account, please sign in.");
+      navigate("/sign-in");
+    } else {
+      await createUserDocumentFromAuth(user);
+      toast.success("Welcome back!");
+      navigate(from);
+    }
   };
 
-  const handleGoogleSignup = () => {
-    console.log("Google signup initiated");
-    toast.info("Connecting to Google...");
-  };
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirm_password: "",
+    },
+    onSubmit,
+  });
+
+  console.log(formik);
 
   return (
     <div className="container py-12 px-4 flex justify-center">
@@ -64,13 +157,13 @@ const SignUp = () => {
               Fill in your details to create your personal account
             </CardDescription>
           </CardHeader>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={formik.handleSubmit}>
             <CardContent>
               <div className="space-y-4 mt-3">
                 <Button
                   variant="outline"
                   type="button"
-                  onClick={handleGoogleSignup}
+                  onClick={authenticateWithGoogle}
                   className="w-full flex items-center justify-center gap-2"
                 >
                   <svg viewBox="0 0 48 48" className="w-5 h-5">
@@ -110,62 +203,75 @@ const SignUp = () => {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2 mb-3">
-                  <Label htmlFor="firstName" className="block text-center mb-4">First Name</Label>
+                  <Label htmlFor="firstName" className="block text-center mb-4">
+                    First Name
+                  </Label>
                   <Input
                     id="firstName"
                     name="firstName"
                     placeholder="John"
                     required
-                    value={formData.firstName}
-                    onChange={handleChange}
+                    value={formik.values.firstName}
+                    onChange={formik.handleChange}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName" className="block text-center mb-4">Last Name</Label>
+                  <Label htmlFor="lastName" className="block text-center mb-4">
+                    Last Name
+                  </Label>
                   <Input
                     id="lastName"
                     name="lastName"
                     placeholder="Doe"
                     required
-                    value={formData.lastName}
-                    onChange={handleChange}
+                    value={formik.values.lastName}
+                    onChange={formik.handleChange}
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email" className="block text-center mb-4">Email</Label>
+                <Label htmlFor="email" className="block text-center mb-4">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
                   placeholder="your@email.com"
                   required
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="block text-center mb-4">Password</Label>
+                <Label htmlFor="password" className="block text-center mb-4">
+                  Password
+                </Label>
                 <Input
                   id="password"
                   name="password"
                   type="password"
                   placeholder="••••••••"
                   required
-                  value={formData.password}
-                  onChange={handleChange}
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
                 />
               </div>
               <div className="space-y-2 pb-4">
-                <Label htmlFor="confirmPassword" className="block text-center mb-4">Confirm Password</Label>
+                <Label
+                  htmlFor="confirmPassword"
+                  className="block text-center mb-4"
+                >
+                  Confirm Password
+                </Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
                   placeholder="••••••••"
                   required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
+                  value={formik.values.confirm_password}
+                  onChange={formik.handleChange}
                 />
               </div>
             </CardContent>
@@ -173,8 +279,6 @@ const SignUp = () => {
               <Button type="submit" className="w-full">
                 Create Account
               </Button>
-
-
 
               <p className="text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
