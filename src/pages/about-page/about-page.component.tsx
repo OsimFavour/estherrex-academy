@@ -9,7 +9,7 @@ const AboutPage = () => {
           <p className="text-muted-foreground mt-2">Our story, mission, and values.</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 text-center">
           <h2 className="text-2xl font-semibold">Our Story</h2>
           <p>
             Esther's Wisdom Academy was founded in 2010 with a clear vision: to create an educational 
@@ -25,7 +25,7 @@ const AboutPage = () => {
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 text-center">
           <h2 className="text-2xl font-semibold">Our Mission</h2>
           <p>
             At Esther's Wisdom Academy, our mission is to empower students through holistic education 
@@ -35,9 +35,9 @@ const AboutPage = () => {
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 text-center px-7">
           <h2 className="text-2xl font-semibold">Our Values</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 sm:grid-cols-1 gap-4 mt-4">
             <Card>
               <CardContent className="pt-6">
                 <h3 className="font-medium mb-2">Excellence</h3>
@@ -65,7 +65,7 @@ const AboutPage = () => {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 text-center">
           <h2 className="text-2xl font-semibold">Our Team</h2>
           <p>
             Our dedicated faculty and staff are the heart of Esther's Wisdom Academy. Our teachers 
@@ -76,7 +76,7 @@ const AboutPage = () => {
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 text-center">
           <h2 className="text-2xl font-semibold">Our Campus</h2>
           <p>
             Located in the heart of the city, our campus provides a safe, modern, and inspiring 
