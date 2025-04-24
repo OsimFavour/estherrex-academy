@@ -19,9 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useLocation } from "react-router-dom";
 import { Textarea } from "@/components/ui/textarea";
-// import { toast } from "@/components/ui/sonner";
 
 const courses = [
   "Effective Prayer Ministry",
