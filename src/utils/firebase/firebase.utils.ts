@@ -65,7 +65,7 @@ export const createUserDocumentFromAuth = async (
           email,
           createdAt,
           ...additionalInformation,
-        });
+        })
       } catch (error) {
         if (error instanceof Error) {
             console.log(`Error fetching the user: ${error.message}`);
