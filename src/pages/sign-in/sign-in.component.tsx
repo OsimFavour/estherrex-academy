@@ -1,7 +1,3 @@
-import { useState } from "react";
-
-import * as Yup from "yup";
-
 import { FormikHelpers, useFormik } from "formik";
 
 import { Button } from "@/components/ui/button";
@@ -21,6 +17,9 @@ import { toast } from "sonner";
 // import { Separator } from "@/components/ui/separator";
 
 import { authenticateWithGooglePopup, signInAuthUserWithEmailAndPassword } from "@/utils/firebase/firebase.utils";
+import { loginSchema } from "@/utils/schemas/schema.utils";
+import { FirebaseError } from "firebase/app";
+import { useState } from "react";
 
 type SignInFormValues = {
   email: string;
@@ -31,7 +30,7 @@ type SignInFormValues = {
 const SignIn = () => {
   const navigate = useNavigate();
   // const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -39,18 +38,13 @@ const SignIn = () => {
       password: "",
     },
 
-    validationSchema: Yup.object({
-      email: Yup.string().email("Invalid email address").required("Required"),
-      password: Yup.string()
-        .min(6, "Minimum 6 characters")
-        .required("Required"),
-    }),
+    validationSchema: loginSchema,
 
     onSubmit: async (
       values: SignInFormValues,
       actions: FormikHelpers<SignInFormValues>
     ) => {
-      setIsLoading(true);
+      // setIsSigningIn(true);
       try {
         const response = await signInAuthUserWithEmailAndPassword(
           values.email,
@@ -63,12 +57,22 @@ const SignIn = () => {
           actions.resetForm();
           navigate("/");
         }
-      } catch (error) {
-        console.error("Sign In Error:", error);
-        toast.error("Login failed. Please check your credentials.");
-      } finally {
-        setIsLoading(isLoading);
-      }
+      } catch (error: unknown) {
+        if (error instanceof FirebaseError) {
+          switch (error.code) {
+            case "auth/cancelled-popup-request":
+              toast.warning("Multiple popup requests canceled. Ensure you're not double-clicking.")
+              break
+            case "net::ERR_NAME_NOT_RESOLVED":
+              toast.warning("Network error. Check your internet connection or DNS settings.")
+              break
+            default:
+              toast.warning("Unexpected error",);
+          }
+        }
+        
+      } 
+
     },
   });
 
@@ -78,14 +82,25 @@ const SignIn = () => {
 
   const authenticateWithGoogle = async () => {
     console.log("Google login initiated");
-    const response = await authenticateWithGooglePopup()
-    if (response) {
+    if (isSigningIn) return;
+    setIsSigningIn(true)
+
+    try{
+
+      const response = await authenticateWithGooglePopup()
+      console.log("This is the response:", response)
       toast.success('Welcome back!')
       navigate('/')
-  } else {
-      toast.info("You'll need to sign up here")
-      navigate('/sign-up')
-  }
+    } catch(error) {
+      if (error instanceof Error) {
+
+        console.error("Google sign-in failed")
+        toast.error("Sign-in failed")
+      }
+    } finally {
+      setIsSigningIn(false)
+    }
+    
   };
 
   return (
@@ -113,6 +128,7 @@ const SignIn = () => {
                   variant="outline"
                   type="button"
                   onClick={authenticateWithGoogle}
+                  disabled={isSigningIn}
                   className="w-full flex items-center justify-center gap-2"
                 >
                   <svg viewBox="0 0 48 48" className="w-5 h-5">
@@ -133,7 +149,8 @@ const SignIn = () => {
                       d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
                     />
                   </svg>
-                  Sign in with Google
+                  
+                  {isSigningIn ? "Signing in..." : "Sign in with Google"}
                 </Button>
 
                 <div className="relative mt-8 mb-6">

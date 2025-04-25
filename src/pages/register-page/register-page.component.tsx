@@ -109,7 +109,7 @@ const RegisterPage = () => {
     <div className="container px-4 py-12">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">Student Registration</h1>
+          <h1 className="text-3xl font-bold">Academy Registration</h1>
           <p className="text-muted-foreground mt-2 px-3">
             Complete the form below to register for upcoming academic sessions
             at Esther's Wisdom Academy.
