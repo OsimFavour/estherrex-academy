@@ -17,7 +17,7 @@ const Hero = () => {
               Nurturing minds, building character, and empowering the next generation of leaders through wisdom and excellence in education.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link to="/register">
+              <Link to="/academy-register">
                 <Button size="lg">Register Now</Button>
               </Link>
               <Link to="/courses">

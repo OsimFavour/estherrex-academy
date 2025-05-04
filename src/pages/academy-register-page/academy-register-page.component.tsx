@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import { EnrollmentProgress } from "@/components/enrollment-progress/enrollment-progress.component";
 
 const courses = [
   "Effective Prayer Ministry",
@@ -36,7 +37,7 @@ const courses = [
   "Strategic Music Ministry",
 ];
 
-const RegisterPage = () => {
+const AcademyRegisterPage = () => {
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -90,13 +91,13 @@ const RegisterPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Frontend validation
+  
     if (!formData.agreeToTerms) {
       toast.error("You must agree to the terms and conditions to register.");
       return;
     }
 
-    // In a real app, you would submit to your backend
+    
     console.log("Form submitted:", formData);
 
     toast("Registration Submitted", {
@@ -116,6 +117,8 @@ const RegisterPage = () => {
           </p>
         </div>
 
+        <EnrollmentProgress />
+
         <Card>
           <CardHeader className="text-center mb-2">
             <CardTitle>Registration Form</CardTitle>
@@ -123,6 +126,7 @@ const RegisterPage = () => {
               Please fill out all required fields to complete your registration.
             </CardDescription>
           </CardHeader>
+
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-6">
               <div className="space-y-8">
@@ -333,4 +337,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default AcademyRegisterPage;

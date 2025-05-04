@@ -9,11 +9,18 @@ import {
   SheetTitle
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { signOutUser } from "@/services/firebase";
+import { auth } from "@/lib/firebase";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   
   const closeMenu = () => setIsOpen(false);
+
+  const handleLogoutClick = () => {
+    signOutUser();
+    closeMenu();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-3">
@@ -40,7 +47,7 @@ const Header = () => {
         
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link to="/register">
+          <Link to="/academy-register">
             <Button variant="outline" className="hidden md:flex">Register</Button>
           </Link>
           <Link to="/login">
@@ -93,12 +100,22 @@ const Header = () => {
                 <Link to="/signup" onClick={closeMenu}>
                   <Button variant="outline" className="w-full my-0">Sign Up</Button>
                 </Link>
-                <Link to="/register" onClick={closeMenu}>
+                <Link to="/academy-register" onClick={closeMenu}>
                   <Button variant="outline" className="w-full my-2">Register</Button>
                 </Link>
-                <Link to="/login" onClick={closeMenu}>
+
+                {
+                  auth.currentUser ? (
+                    <Link to="/login" onClick={closeMenu}>
                   <Button className="w-full">Login</Button>
                 </Link>
+                  ) : (
+                    <Link to="/login" onClick={handleLogoutClick}>
+                  <Button className="w-full">Login</Button>
+                </Link>
+                  )
+                }
+                
               </div>
             </div>
           </SheetContent>

@@ -14,9 +14,11 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-// import { Separator } from "@/components/ui/separator";
 
-import { authenticateWithGooglePopup, signInAuthUserWithEmailAndPassword } from "@/utils/firebase/firebase.utils";
+import {
+  authenticateWithGooglePopup,
+  signInAuthUserWithEmailAndPassword,
+} from "@/utils/firebase/firebase.utils";
 import { loginSchema } from "@/utils/schemas/schema.utils";
 import { FirebaseError } from "firebase/app";
 import { useState } from "react";
@@ -26,12 +28,12 @@ type SignInFormValues = {
   password: string;
 };
 
-
 const SignIn = () => {
   const navigate = useNavigate();
   // const [rememberMe, setRememberMe] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
 
+  
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -61,18 +63,20 @@ const SignIn = () => {
         if (error instanceof FirebaseError) {
           switch (error.code) {
             case "auth/cancelled-popup-request":
-              toast.warning("Multiple popup requests canceled. Ensure you're not double-clicking.")
-              break
+              toast.warning(
+                "Multiple popup requests canceled. Ensure you're not double-clicking."
+              );
+              break;
             case "net::ERR_NAME_NOT_RESOLVED":
-              toast.warning("Network error. Check your internet connection or DNS settings.")
-              break
+              toast.warning(
+                "Network error. Check your internet connection or DNS settings."
+              );
+              break;
             default:
-              toast.warning("Unexpected error",);
+              toast.warning("Unexpected error");
           }
         }
-        
-      } 
-
+      }
     },
   });
 
@@ -83,24 +87,21 @@ const SignIn = () => {
   const authenticateWithGoogle = async () => {
     console.log("Google login initiated");
     if (isSigningIn) return;
-    setIsSigningIn(true)
+    setIsSigningIn(true);
 
-    try{
-
-      const response = await authenticateWithGooglePopup()
-      console.log("This is the response:", response)
-      toast.success('Welcome back!')
-      navigate('/')
-    } catch(error) {
+    try {
+      const response = await authenticateWithGooglePopup();
+      console.log("This is the response:", response);
+      toast.success("Welcome back!");
+      navigate("/");
+    } catch (error) {
       if (error instanceof Error) {
-
-        console.error("Google sign-in failed")
-        toast.error("Sign-in failed")
+        console.error("Google sign-in failed");
+        toast.error("Sign-in failed");
       }
     } finally {
-      setIsSigningIn(false)
+      setIsSigningIn(false);
     }
-    
   };
 
   return (
@@ -149,7 +150,7 @@ const SignIn = () => {
                       d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
                     />
                   </svg>
-                  
+
                   {isSigningIn ? "Signing in..." : "Sign in with Google"}
                 </Button>
 
@@ -163,14 +164,14 @@ const SignIn = () => {
                     </span>
                   </div>
                 </div>
-
-                
               </div>
             </CardContent>
 
             <CardContent className="space-y-4">
               <div className="space-y-2 mb-6">
-                <Label htmlFor="email" className="block text-center mb-6">Email</Label>
+                <Label htmlFor="email" className="block text-center mb-6">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   name="email"
@@ -183,8 +184,9 @@ const SignIn = () => {
               </div>
               <div className="space-y-4">
                 <div className="flex justify-center">
-                  <Label htmlFor="password" className="block text-center mb-2">Password</Label>
-                  
+                  <Label htmlFor="password" className="block text-center mb-2">
+                    Password
+                  </Label>
                 </div>
                 <Input
                   id="password"
@@ -197,11 +199,11 @@ const SignIn = () => {
                 />
 
                 <Link
-                    to="/forgot-password"
-                    className="text-xs text-primary hover:underline"
-                  >
-                    Forgot password?
-                  </Link>
+                  to="/forgot-password"
+                  className="text-xs text-primary hover:underline"
+                >
+                  Forgot password?
+                </Link>
               </div>
               <div className="flex items-center space-x-2 pb-3">
                 <Checkbox
@@ -219,7 +221,6 @@ const SignIn = () => {
                 Sign In
               </Button>
 
-
               <p className="text-center text-sm text-muted-foreground">
                 Don't have an account?{" "}
                 <Link to="/signup" className="text-primary hover:underline">
@@ -228,7 +229,7 @@ const SignIn = () => {
               </p>
               <p className="text-center text-sm text-muted-foreground">
                 Need to register a student?{" "}
-                <Link to="/register" className="text-primary hover:underline">
+                <Link to="/academy-register" className="text-primary hover:underline">
                   Register here
                 </Link>
               </p>
